@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Movie Library</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href= "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" /> 
+    </head>
+
+    <body>
+        <div id="search_header">
+            <input type="search" placeholder="Search Movies" id="search">
+            <input type="submit" id="btnSearch" onclick="searchStringInArray()">
+        </div>
+
+        <div class="row" style="margin-left: 35px;"> </div> 
+        <br/><br/>
+        <form id="myForm">
+            <input type="text" placeholder="Title" id="title" style="margin-left: 50px;margin-top: 6%;"/> <br/><br/>
+            <input type="text" placeholder="Year" id="year" style="margin-left: 50px;"/> <br/><br>
+            <input type="file" id="fileUpload" style="margin-left: 50px;"/><br>
+            <input type="button" value="Add Movie" onclick="addRow();addRecord();" id="btnAdd" style="margin-left: 50px;"/>
+        </form>
+        <script>
+            function addRow() 
+            {
+                const div = document.createElement('div');
+            
+                div.innerHTML = '<div class="col mx-1">'+ 
+                                '<canvas id="canvas1" width="400" height="200"> </canvas>'+   
+                                '<input type="button" value="Delete" onclick="removeRow(this)" id="btnRemove">'+
+                                '<div class="details">'+
+                                document.getElementById('title').value +
+                                '<br/>'+
+                                document.getElementById('year').value+
+                                '<br/><br/></div>'+'</div>';
+                
+                document.querySelector(".row").appendChild(div);
+
+                document.getElementById("myForm").reset();
+            }
+            function removeRow(input) 
+            {
+                input.parentNode.remove();
+                $(".details").empty();
+            }
+        
+            var fileUpload = document.getElementById('fileUpload');
+            const canvas = document.getElementById("canvas1");
+            var ctx = canvas.getContext("2d");
+
+            function readImage() 
+            {
+                if ( this.files && this.files[0] ) 
+                {
+                    var FR= new FileReader();
+                    FR.onload = function(e) 
+                    {
+                        var img = new Image();
+                        img.src = e.target.result;
+                        img.onload = function()
+                        {
+                            ctx.drawImage(img, 0, 0, 512, 512);
+                        };
+                    };       
+                    FR.readAsDataURL( this.files[0] );
+                }
+            }
+
+            fileUpload.onchange = readImage;
+
+            canvas.onclick = function(e) 
+            {
+                var x = e.offsetX;
+                var y = e.offsetY;
+                ctx.beginPath();
+                ctx.fillStyle = 'black';
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            };
+        </script>
+        <script src="list.js"></script>
+    </body>
+</html>
